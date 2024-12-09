@@ -1,0 +1,23 @@
+# Health Check Endpoint
+[[routes]]
+path = "/api/v1/health"
+method = "GET"
+status_code = 200
+response_body = '{"status": "healthy"}'
+content_type = "application/json"
+
+# Shared Path with GET Method
+[[routes]]
+path = "/api/v1/resource"
+method = "GET"
+status_code = 200
+response_body = '{"message": "Resource retrieved successfully"}'
+content_type = "application/json"
+
+# Shared Path with POST Method
+[[routes]]
+path = "/api/v1/resource"
+method = "POST"
+status_code = 201
+response_body = '{"message": "Resource created successfully"}'
+content_type = "application/json"
