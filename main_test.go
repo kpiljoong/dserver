@@ -1,9 +1,12 @@
 package main
 
 import (
+  "os"
   "net/http"
   "net/http/httptest"
+  "sync/atomic"
   "testing"
+  "time"
 )
 
 var TestConfig = []RouteConfig{
@@ -28,6 +31,41 @@ var TestConfig = []RouteConfig{
     ResponseBody: `{"message": "Resource created successfully"}`,
     ContentType: "application/json",
   },
+}
+
+func TestWatchConfigFile(t *testing.T) {
+  // Use a temp file for testing
+  tmpFile, err := os.CreateTemp("", "config-*.toml")
+  if err != nil {
+    t.Fatalf("Failed to create temp file: %v", err)
+  }
+  defer os.Remove(tmpFile.Name())
+
+  var reloadCalled int32
+
+  mockReloadConfig := func() {
+    atomic.AddInt32(&reloadCalled, 1)
+  }
+
+  go func() {
+    watchConfigFile(tmpFile.Name(), mockReloadConfig)
+  }()
+
+  // Simulate file changes
+  time.Sleep(100 * time.Millisecond)
+  os.WriteFile(tmpFile.Name(), []byte("test"), 0644)
+  time.Sleep(200 * time.Millisecond)
+
+  os.Rename(tmpFile.Name(), tmpFile.Name()+"-renamed")
+  time.Sleep(200 * time.Millisecond)
+
+  os.WriteFile(tmpFile.Name()+"-renamed", []byte("test content"), 0644)
+  time.Sleep(200 * time.Millisecond)
+
+  reloadCount := atomic.LoadInt32(&reloadCalled)
+  if reloadCount != 3 {
+    t.Errorf("Expected reload count of 3, got %d", reloadCount)
+  }
 }
 
 func TestHealthEndpoint(t *testing.T) {
