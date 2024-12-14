@@ -7,7 +7,7 @@ response_body = '{"status": "healthy"}'
 content_type = "application/json"
 delay_ms = 200
 
-# Shared Path with GET Method
+# Multi Respones with GET Method
 [[routes]]
 path = "/api/v1/resource"
 method = "GET"
@@ -27,10 +27,25 @@ responses = [
     }
     """,
     content_type = "application/json"
+  },
+  { 
+    query = { "type" = "inactive" },
+    status_code = 200,
+    response_body = """
+    {
+      "message": "Resource retrieved successfully",
+      "data": {
+        "id": 2,
+        "name": "Resource 2",
+        "type": "inactive"
+      }
+    }
+    """,
+    content_type = "application/json"
   }
 ]
 
-# Shared Path with POST Method
+# POST Method
 [[routes]]
 path = "/api/v1/resource"
 method = "POST"
