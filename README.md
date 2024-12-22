@@ -49,9 +49,9 @@ method = "POST"
 status_code = 201
 content_type = "application/json"
 responses = [
-{ query = {}, response_body = """{ "message": "Default resources" }""" },
-{ query = { "type" = "active" }, delay_ms = 1000, response_body = """{ "message": "Active resources" }""" },
-{ query = { "type" = "inactive" }, response_body = """{ "message": "Inactive resources" }""" }
+  { query = {}, response_body = """{ "message": "Default resources" }""" },
+  { query = { "type" = "active" }, delay_ms = 1000, response_body = """{ "message": "Active resources" }""" },
+  { query = { "type" = "inactive" }, response_body = """{ "message": "Inactive resources" }""" }
 ]
 ```
 
